@@ -34,7 +34,7 @@ module ThreadLocalAccessors
         def #{name}=(val)
           #{ivar} = Hash.new #{'{|h, k| h[k] = val}' if first_is_default} unless #{ivar}
           thread_id = Thread.current.object_id
-          unless #{ivar}.has_key?(thread_id)
+          unless #{ivar}.has_key?(thread_id) || Thread.current == Thread.main
             ObjectSpace.define_finalizer(Thread.current, lambda { #{ivar}.delete(thread_id) })
           end
           #{ivar}[thread_id] = val
